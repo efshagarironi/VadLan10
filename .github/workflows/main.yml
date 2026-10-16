@@ -76,17 +76,33 @@ jobs:
           plugins { id 'com.android.application' version '8.5.2' apply false }
           EOF
 
+          # fixed signing key: every build is signed with the same key, so a new APK installs over the old one
+          echo "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" | base64 -d > app/vadlan.jks
+
           cat > app/build.gradle <<'EOF'
           plugins { id 'com.android.application' }
           android {
               namespace 'com.mylauncher'
               compileSdk 34
+              signingConfigs {
+                  vadlan {
+                      storeFile file('vadlan.jks')
+                      storePassword 'vadlan123'
+                      keyAlias 'vadlan'
+                      keyPassword 'vadlan123'
+                  }
+              }
               defaultConfig {
                   applicationId "com.vadlan"
                   minSdk 26
                   targetSdk 34
-                  versionCode 26
-                  versionName "26.0"
+                  // grows with every GitHub build, so Android always accepts it as an update
+                  versionCode 1000 + ((System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int)
+                  versionName "28.0"
+              }
+              buildTypes {
+                  debug { signingConfig signingConfigs.vadlan }
+                  release { signingConfig signingConfigs.vadlan }
               }
           }
           tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
@@ -112,6 +128,7 @@ jobs:
               <application
                   android:label="VadLan"
                   android:icon="@mipmap/ic_launcher"
+                  android:roundIcon="@mipmap/ic_launcher"
                   android:supportsRtl="true"
                   android:requestLegacyExternalStorage="true"
                   android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
@@ -154,6 +171,7 @@ jobs:
           <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
               <background android:drawable="@drawable/ic_bg"/>
               <foreground android:drawable="@drawable/ic_fg"/>
+              <monochrome android:drawable="@drawable/ic_mono"/>
           </adaptive-icon>
           EOF
 
@@ -164,29 +182,13 @@ jobs:
               android:viewportWidth="108" android:viewportHeight="108">
               <path android:pathData="M0,0h108v108h-108z">
                   <aapt:attr name="android:fillColor">
-                      <gradient android:startX="54" android:startY="0"
-                          android:endX="54" android:endY="108" android:type="linear">
-                          <item android:offset="0" android:color="#FF03051A"/>
-                          <item android:offset="0.45" android:color="#FF101B5C"/>
-                          <item android:offset="0.8" android:color="#FF2B3FA0"/>
-                          <item android:offset="1" android:color="#FF4C6FD6"/>
+                      <gradient android:startX="0" android:startY="0" android:endX="108" android:endY="108" android:type="linear">
+                          <item android:offset="0" android:color="#FF1A237E"/>
+                          <item android:offset="0.55" android:color="#FF3949AB"/>
+                          <item android:offset="1" android:color="#FF5C6BC0"/>
                       </gradient>
                   </aapt:attr>
               </path>
-              <path android:fillColor="#CCFFFFFF" android:pathData="M14,12h1.2v1.2h-1.2z M92,10h1.2v1.2h-1.2z M70,6h1v1h-1z M8,38h1.2v1.2h-1.2z M100,34h1v1h-1z M40,8h1v1h-1z M88,56h1.2v1.2h-1.2z M16,66h1v1h-1z M56,14h0.9v0.9h-0.9z M30,50h0.9v0.9h-0.9z"/>
-              <path android:fillColor="#4D7FD8FF" android:pathData="M-40,120A120,120 0 0 1 148,120z"/>
-              <path android:pathData="M-30,120A110,110 0 0 1 138,120z">
-                  <aapt:attr name="android:fillColor">
-                      <gradient android:startX="54" android:startY="81"
-                          android:endX="54" android:endY="120" android:type="linear">
-                          <item android:offset="0" android:color="#FF5AD0FF"/>
-                          <item android:offset="0.4" android:color="#FF1E6FD0"/>
-                          <item android:offset="1" android:color="#FF0A2E7A"/>
-                      </gradient>
-                  </aapt:attr>
-              </path>
-              <path android:fillColor="#B33DBE6B" android:pathData="M22,100c4,-4 10,-5 14,-2c2,3 -1,6 -5,7c-5,1 -10,0 -9,-5z M58,92c5,-3 12,-2 15,1c2,3 -2,5 -6,5c-5,0 -9,-1 -9,-6z M84,102c4,-3 9,-2 11,1c1,3 -3,4 -6,4c-3,0 -5,-2 -5,-5z"/>
-              <path android:strokeColor="#99BFEFFF" android:strokeWidth="0.8" android:pathData="M-30,120A110,110 0 0 1 138,120"/>
           </vector>
           EOF
 
@@ -194,94 +196,32 @@ jobs:
           <vector xmlns:android="http://schemas.android.com/apk/res/android"
               android:width="108dp" android:height="108dp"
               android:viewportWidth="108" android:viewportHeight="108">
-              <group android:translateX="30" android:translateY="30">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="-20" android:scaleX="0.85" android:scaleY="0.85">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FFB71C1C" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FFFF5252" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-3,0a3,3 0 1 0 6,0a3,3 0 1 0 -6,0z"/>
-                  </group>
-              </group>
-              <group android:translateX="62" android:translateY="24">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="16" android:scaleX="0.75" android:scaleY="0.75">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FF0277BD" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FF40C4FF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-2,-3.2L3.4,0L-2,3.2z"/>
-                  </group>
-              </group>
-              <group android:translateX="81" android:translateY="43">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="-14" android:scaleX="0.6" android:scaleY="0.6">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FFE65100" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FFFFAB40" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-3,-3h6v6h-6z"/>
-                  </group>
-              </group>
-              <group android:translateX="46" android:translateY="46">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="8" android:scaleX="0.8" android:scaleY="0.8">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FF00897B" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FF69F0AE" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:fillType="evenOdd" android:pathData="M-3.2,0a3.2,3.2 0 1 0 6.4,0a3.2,3.2 0 1 0 -6.4,0z M-1.6,0a1.6,1.6 0 1 0 3.2,0a1.6,1.6 0 1 0 -3.2,0z"/>
-                  </group>
-              </group>
-              <group android:translateX="24" android:translateY="57">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="22" android:scaleX="0.55" android:scaleY="0.55">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FF5E35B1" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FFB388FF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-3,0a3,3 0 1 0 6,0a3,3 0 1 0 -6,0z"/>
-                  </group>
-              </group>
-              <group android:translateX="67" android:translateY="62">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="-10" android:scaleX="0.6" android:scaleY="0.6">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FFF9A825" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FFFFE57F" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-2,-3.2L3.4,0L-2,3.2z"/>
-                  </group>
-              </group>
-              <group android:translateX="46" android:translateY="71">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="12" android:scaleX="0.45" android:scaleY="0.45">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FFC2185B" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FFFF80AB" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:pathData="M-3,-3h6v6h-6z"/>
-                  </group>
-              </group>
-              <group android:translateX="84" android:translateY="72">
-                  <path android:fillColor="#40FFFFFF" android:pathData="M-1.3,-8L0,-34L1.3,-8z"/>
-                  <path android:fillColor="#66FFFFFF" android:pathData="M-0.7,-8L0,-20L0.7,-8z"/>
-                  <group android:rotation="-18" android:scaleX="0.38" android:scaleY="0.38">
-                      <group android:translateX="3.4" android:translateY="4.6"><path android:fillColor="#59000000" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <group android:translateX="1.7" android:translateY="2.3"><path android:fillColor="#FF00ACC1" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/></group>
-                      <path android:fillColor="#FF18FFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v8.8a3.6,3.6 0 0 1 -3.6,3.6h-8.8a3.6,3.6 0 0 1 -3.6,-3.6v-8.8a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#4DFFFFFF" android:pathData="M-4.4,-8h8.8a3.6,3.6 0 0 1 3.6,3.6v2.2c-5,2.4 -11,2.4 -16,0v-2.2a3.6,3.6 0 0 1 3.6,-3.6z"/>
-                      <path android:fillColor="#E6FFFFFF" android:fillType="evenOdd" android:pathData="M-3.2,0a3.2,3.2 0 1 0 6.4,0a3.2,3.2 0 1 0 -6.4,0z M-1.6,0a1.6,1.6 0 1 0 3.2,0a1.6,1.6 0 1 0 -3.2,0z"/>
-                  </group>
-              </group>
+              <path android:fillColor="#FFFF5252" android:pathData="M32,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF40C4FF" android:pathData="M51,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FFFFAB40" android:pathData="M70,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF69F0AE" android:pathData="M32,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FFFFFFFF" android:pathData="M51,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF3D5AFE" android:pathData="M54,50.5a3.5,3.5 0 1 0 0.01,0z"/>
+              <path android:fillColor="#FFB388FF" android:pathData="M70,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FFFF80AB" android:pathData="M32,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FFFFE57F" android:pathData="M51,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF64FFDA" android:pathData="M70,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+          </vector>
+          EOF
+
+          cat > app/src/main/res/drawable/ic_mono.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#FF000000" android:pathData="M32,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M51,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M70,28h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M32,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:fillType="evenOdd" android:pathData="M51,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z M54,50.5a3.5,3.5 0 1 0 0.01,0z"/>
+              <path android:fillColor="#FF000000" android:pathData="M70,47h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M32,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M51,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
+              <path android:fillColor="#FF000000" android:pathData="M70,66h6a4,4 0 0 1 4,4v6a4,4 0 0 1 -4,4h-6a4,4 0 0 1 -4,-4v-6a4,4 0 0 1 4,-4z"/>
           </vector>
           EOF
 
@@ -1169,6 +1109,7 @@ jobs:
                       page = HOME;
                       show();
                   } else if (page == RESTORE) {
+                      if (!rSel.isEmpty()) { rSel.clear(); show(); return; }
                       page = BACKUP;
                       show();
                   } else if (page == FPICK) {
@@ -4526,6 +4467,7 @@ jobs:
                   v.getLocationOnScreen(l);
                   return new Rect(l[0], l[1], l[0] + v.getWidth(), l[1] + v.getHeight());
               }
+
               // window size of "Run apps": the home frame, or (second tick) top frame + home frame + dock together
               Rect runRect() {
                   if (sp.getBoolean("hfRunFull", false)) {
@@ -5417,7 +5359,24 @@ jobs:
                   return r;
               }
 
-              View restorePage(int fg) {
+              // backup files picked in the restore list (hold a file to start picking)
+              final Set<String> rSel = new HashSet<>();
+
+              void deleteBackups(final List<File> files) {
+                  new AlertDialog.Builder(this).setTitle(t("حذف پشتیبان", "Delete backups"))
+                          .setMessage(t("تعداد فایل‌های انتخاب‌شده: ", "Selected files: ") + files.size() + "\n\n"
+                                  + t("این فایل‌ها برای همیشه حذف می‌شوند.", "These files will be deleted permanently."))
+                          .setPositiveButton(t("حذف", "Delete"), (d, w) -> {
+                              int bad = 0;
+                              for (File f : files) { try { if (!f.delete()) bad++; } catch (Throwable e) { bad++; } }
+                              rSel.clear();
+                              if (bad > 0) Toast.makeText(this, t("حذف بعضی فایل‌ها ممکن نشد", "Some files could not be deleted"), Toast.LENGTH_LONG).show();
+                              show();
+                          })
+                          .setNegativeButton(t("لغو", "Cancel"), null).show();
+              }
+
+              View restorePage(final int fg) {
                   LinearLayout r = vbox();
                   r.addView(topBar(t("فراخوان پشتیبان", "Restore backup"), fg));
                   File[] fs = null;
@@ -5425,13 +5384,50 @@ jobs:
                       fs = backupDir().listFiles((d, n) -> n.toLowerCase().endsWith(".json"));
                   } catch (Exception e) { }
                   if (fs == null || fs.length == 0) {
+                      rSel.clear();
                       r.addView(labelBox(t("هیچ نسخه پشتیبانی در پوشه VadLan پیدا نشد", "No backups found in the VadLan folder"), fg));
                   } else {
                       Arrays.sort(fs, (x, y) -> Long.compare(y.lastModified(), x.lastModified()));
-                      for (final File f : fs) {
+                      final List<File> all = new ArrayList<>(Arrays.asList(fs));
+                      Set<String> names = new HashSet<>();
+                      for (File f : all) names.add(f.getName());
+                      rSel.retainAll(names);
+                      final boolean picking = !rSel.isEmpty();
+                      if (picking) {
+                          final List<File> chosen = new ArrayList<>();
+                          for (File f : all) if (rSel.contains(f.getName())) chosen.add(f);
+                          r.addView(row(0xFFE53935, "🗑", t("حذف انتخاب‌شده‌ها", "Delete selected") + " (" + chosen.size() + ")",
+                                  null, 0, fg, v -> deleteBackups(chosen)));
+                          final boolean allOn = chosen.size() == all.size();
+                          r.addView(row(0xFF1E88E5, "☑", allOn ? t("برداشتن انتخاب همه", "Deselect all") : t("انتخاب همه", "Select all"),
+                                  null, 0, fg, v -> {
+                              if (allOn) rSel.clear();
+                              else for (File f : all) rSel.add(f.getName());
+                              show();
+                          }));
+                          r.addView(row(0xFF757575, "✕", t("پایان انتخاب", "Done selecting"),
+                                  null, 0, fg, v -> { rSel.clear(); show(); }));
+                      }
+                      for (final File f : all) {
                           String when = new SimpleDateFormat("yyyy/MM/dd  HH:mm", Locale.US)
                                   .format(new Date(f.lastModified()));
-                          r.addView(row(0xFF1E88E5, "💾", f.getName(), when, 0, fg, v -> confirmRestore(f)));
+                          final String nm = f.getName();
+                          View row = row(0xFF1E88E5, "💾", nm, when,
+                                  picking ? (rSel.contains(nm) ? 3 : 2) : 0, fg, v -> {
+                              if (!rSel.isEmpty()) {
+                                  if (!rSel.remove(nm)) rSel.add(nm);
+                                  show();
+                              } else {
+                                  confirmRestore(f);
+                              }
+                          });
+                          row.setOnLongClickListener(v -> {
+                              vib(25);
+                              if (!rSel.remove(nm)) rSel.add(nm);
+                              show();
+                              return true;
+                          });
+                          r.addView(row);
                       }
                   }
                   return wrapScroll(r);
