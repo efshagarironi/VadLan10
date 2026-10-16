@@ -85,8 +85,8 @@ jobs:
                   applicationId "com.vadlan"
                   minSdk 26
                   targetSdk 34
-                  versionCode 25
-                  versionName "25.0"
+                  versionCode 26
+                  versionName "26.0"
               }
           }
           tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
@@ -4526,15 +4526,30 @@ jobs:
                   v.getLocationOnScreen(l);
                   return new Rect(l[0], l[1], l[0] + v.getWidth(), l[1] + v.getHeight());
               }
-
               // window size of "Run apps": the home frame, or (second tick) top frame + home frame + dock together
               Rect runRect() {
                   if (sp.getBoolean("hfRunFull", false)) {
-                      // whole display including the area under the Android status bar
+                      // whole display, from just under the Android status bar down to just above the navigation bar
                       try {
                           DisplayMetrics dm = new DisplayMetrics();
                           getWindowManager().getDefaultDisplay().getRealMetrics(dm);
-                          return new Rect(0, 0, dm.widthPixels, dm.heightPixels);
+                          int top = 0, bottom = 0;
+                          View root = getWindow().getDecorView();
+                          WindowInsets wi = root.getRootWindowInsets();
+                          if (wi != null) {
+                              top = wi.getSystemWindowInsetTop();
+                              bottom = wi.getSystemWindowInsetBottom();
+                          }
+                          android.content.res.Resources rs = getResources();
+                          if (top <= 0) {
+                              int id = rs.getIdentifier("status_bar_height", "dimen", "android");
+                              if (id > 0) top = rs.getDimensionPixelSize(id);
+                          }
+                          if (bottom <= 0) {
+                              int id = rs.getIdentifier("navigation_bar_height", "dimen", "android");
+                              if (id > 0) bottom = rs.getDimensionPixelSize(id);
+                          }
+                          return new Rect(0, top, dm.widthPixels, dm.heightPixels - bottom);
                       } catch (Throwable e) { }
                   }
                   Rect f = frameRect();
@@ -4672,8 +4687,8 @@ jobs:
                                           "Apps open as big as the top frame, the home icons frame and the dock together"),
                                   "hfRunAll", false, fg),
                           toggleRow(0xFFEF6C00, "▥", t("تمام صفحه", "Full screen"),
-                                  t("برنامه‌ها به اندازه کل صفحه نمایش و از زیر نوار اعلان اندروید باز می‌شوند و همه صفحه را می‌پوشانند (نیاز به پنجره آزاد / Freeform در گوشی)",
-                                          "Apps open as big as the whole display, under the Android status bar, covering the entire screen (needs free-form windows on the phone)"),
+                                  t("برنامه‌ها به اندازه کل صفحه نمایش، از زیر نوار اعلان اندروید تا بالای نوار پیمایش پایین، باز می‌شوند (نیاز به پنجره آزاد / Freeform در گوشی)",
+                                          "Apps open as big as the whole display, from below the Android status bar to above the navigation bar (needs free-form windows on the phone)"),
                                   "hfRunFull", false, fg)));
                   return wrapScroll(r);
               }
