@@ -2718,10 +2718,10 @@ jobs:
 
                   boolean clkOn = sp.getBoolean("clockOn", false), dtOn = sp.getBoolean("dateOn", false);
                   if (clkOn || dtOn) {
-                      // clock: replaces the folder counter (centered), the icon counter disappears
-                      // date: replaces the icon counter, placed on the right of the clock (or of the folder counter)
+                      // clock on: folder counter -> clock (centered), icon counter removed
+                      // date on + clock on: date on the right of the clock
+                      // date on + clock off: folder counter and icon counter removed, date centered
                       if (clkOn) c.addView(clockBox(fg));
-                      else c.addView(countBox(folderCount, fg));
                       if (dtOn) c.addView(dateBox(fg));
                       return c;
                   }
@@ -2780,7 +2780,8 @@ jobs:
               void setDate(TextView tv) {
                   Calendar c = Calendar.getInstance();
                   int[] j = g2j(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
-                  tv.setText(String.format(Locale.US, "%02d" + DATE_SEP + "%02d", j[2], j[1]));
+                  tv.setText(String.format(Locale.US, "%02d" + DATE_SEP + "%02d" + DATE_SEP + "%02d",
+                          j[0] % 100, j[1], j[2]));
               }
 
               // refreshes the text while the box is on screen (clock every second, date every 30 seconds)
@@ -2825,9 +2826,9 @@ jobs:
                   return tv;
               }
 
-              View clockBox(int fg) { return timeBox(fg, 1.75f, 0.9f, false); }
+              View clockBox(int fg) { return timeBox(fg, 2.2f, 0.85f, false); }
 
-              View dateBox(int fg) { return timeBox(fg, 1.55f, 0.85f, true); }
+              View dateBox(int fg) { return timeBox(fg, 2.2f, 0.85f, true); }
 
               // a tap does nothing; the settings open only after holding for 1 second
               void longOne(View v, final Runnable r) {
@@ -2868,8 +2869,8 @@ jobs:
                                           "Digital clock instead of the folder counter, in the toolbar center"),
                                   "clockOn", false, fg),
                           toggleRow(0xFF26C6DA, "📅", t("تاریخ", "Date"),
-                                  t("تاریخ شمسی (روز و ماه) در کنار ساعت، به جای کادر شمارش آیکون",
-                                          "Jalali date (day and month) beside the clock, instead of the icon counter"),
+                                  t("تاریخ شمسی به جای کادر شمارش آیکون، سمت راست ساعت",
+                                          "Jalali date instead of the icon counter, right of the clock"),
                                   "dateOn", false, fg)));
                   // placement of the two counters together: first lever = horizontal, second = vertical
                   box.addView(accordionGroup(0xFF00ACC1, "↔", t("جای‌گیری", "Placement"), fg,
