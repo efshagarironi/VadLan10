@@ -3030,9 +3030,9 @@ jobs:
                       case 13: rotY = rel * 60f; scx = scy = Math.max(0.8f, 1f - a * 0.2f); al = Math.max(0f, 1f - a * 0.5f); tx = -rel * W * 0.5f; break; // crystal
                       case 14: rot = rel * 90f; scx = scy = Math.max(0.6f, 1f - a * 0.4f); tx = -rel * W * 0.6f; al = Math.max(0f, 1f - a * 0.5f); break; // ball
                       case 15: tx = 0; v.setPivotX(rel > 0 ? 0 : pw); rotY = -rel * 75f; break; // snake folding
-                      case 16: tx = -rel * W * 0.3f; rotY = rel * 90f; scx = scy = Math.max(0.9f, 1f - a * 0.1f); break; // cylinder
+                      case 16: tx = 0; v.setPivotX(rel > 0 ? 0 : pw); rotY = -rel * 80f; scx = scy = Math.max(0.92f, 1f - a * 0.08f); break; // cylinder (drum roll)
                       case 17: ty = a * H * 0.1f; rotX = rel * 40f; al = Math.max(0f, 1f - a); break; // animasi
-                      case 18: rotX = -rel * 30f; rotY = rel * 15f; tx = -rel * W * 0.8f; break; // cloth
+                      case 18: tx = -rel * W * 0.85f; v.setPivotY(ph); rotX = rel * 30f; rotY = -rel * 12f; scx = scy = Math.max(0.9f, 1f - a * 0.08f); al = Math.max(0f, 1f - a * 0.25f); break; // cloth (hangs from the bottom edge)
                       case 19: tx = 0; rotX = rel * 60f; scx = scy = Math.max(0.8f, 1f - a * 0.2f); al = Math.max(0f, 1f - a * 0.6f); break; // chessboard
                       case 20: tx = -rel * W * 0.5f; rotY = -rel * 90f; break; // fold
                       case 21: rotY = rel * 45f; tx = -rel * W * 0.8f; scx = scy = Math.max(0.85f, 1f - a * 0.15f); break; // cassette
