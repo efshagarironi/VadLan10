@@ -964,7 +964,7 @@ jobs:
           // the bubble "actions": up to 20 saved ways of starting something inside an app
           // (an app shortcut, the last screen of the app, or just the app itself)
           public class BubbleActs {
-           static final int MAX = 20;
+           static final int MAX = 30;
 
            static class Act {
             String pkg, type, id, label, name = "";   // name = the custom name shown in the bubble list; type: "sc" shortcut, "cmp" screen, "rcv" receiver, "svc" service, "tile" quick settings tile, "macro" recorded taps inside the app (steps in id), "app" open the app (id: "popup" or "full")
@@ -1608,20 +1608,6 @@ jobs:
             }
             final String d = Math.abs(dy) >= Math.abs(dx) ? "down" : (dx < 0 ? "left" : "right");
             final boolean fa = fa();
-            if (sp.getBoolean("swai_" + d, false)) {
-             // AI: a list like the action list, with the AI actions in the chosen order
-             List<LItem> l = new java.util.ArrayList<>();
-             for (final int id : BubbleActs.aiOrder(sp, d)) {
-              LItem it = new LItem();
-              it.pkg = BubbleActs.aiPkg(id);
-              it.text = BubbleActs.aiName(fa, id);
-              it.click = () -> { closeList(); runAiItem(d, id); };
-              l.add(it);
-             }
-             dropSquash();
-             openCustomList(l);
-             return;
-            }
             if ("list".equals(sp.getString("swm_" + d, ""))) {
              // a list of apps, in the look of the action list
              List<LItem> l = new java.util.ArrayList<>();
@@ -7481,7 +7467,7 @@ jobs:
               v -> { page = BEHAVIOR; show(); }));
             r.addView(row(0xFF29B6F6, "⚓", t("داک", "Dock"), null, 0, fg,
               v -> { page = DOCK; show(); }));
-            r.addView(row(0xFFFF5722, "🔮", t("ماک (حباب شناور)", "Mock (Floating Bubble)"), null, 0, fg,
+            r.addView(row(0xFFFF5722, "🔮", t("حباب", "Bubble"), null, 0, fg,
               v -> { page = MOCK; show(); }));
             r.addView(row(0xFF8D6E63, "📁", t("تنظیمات پوشه", "Folder Settings"), null, 0, fg,
               v -> { page = FOLDER; show(); }));
@@ -7627,7 +7613,7 @@ jobs:
 
            View mockPage(int fg) {
             LinearLayout r = vbox();
-            r.addView(topBar(t("تنظیمات ماک", "Mock Settings"), fg));
+            r.addView(topBar(t("حباب", "Bubble"), fg));
 
             boolean mockOn = sp.getBoolean("mock_on", false);
             r.addView(row(0xFFFF5722, "🔮", t("فعال‌سازی ماک", "Enable Mock"),
@@ -7657,7 +7643,7 @@ jobs:
             };
 
             // everything about what the bubble does and its list lives on its own page
-            r.addView(row(0xFF00897B, "💬", t("حباب", "Bubble"),
+            r.addView(row(0xFF00897B, "💬", t("عملکرد", "Actions"),
               t("لانچر، عملکردها و ظاهر لیست حباب", "Launcher, actions and the look of the bubble list"),
               0, fg, v -> {
              page = BUB;
@@ -7685,7 +7671,7 @@ jobs:
            // ---------- bubble page ----------
            View bubblePage(final int fg) {
             LinearLayout r = vbox();
-            r.addView(topBar(t("حباب", "Bubble"), fg));
+            r.addView(topBar(t("عملکرد", "Actions"), fg));
             final boolean bubLau = sp.getBoolean("bub_launcher", true);
             final boolean bubAct = sp.getBoolean("bub_act_on", false);
             r.addView(row(0xFF3D7BF7, "🏠", t("لانچر", "Launcher"),
@@ -7711,7 +7697,7 @@ jobs:
                t("کشویی از بالا", "Slide from the top")};
              final int[] fxIds = {0, 6, 1, 2, 3, 5};
              final int[] fxDots = {0xFF9E9E9E, 0xFF29B6F6, 0xFF42A5F5, 0xFF26A69A, 0xFFFF7043, 0xFF66BB6A};
-             r.addView(accordionGroupFaded(0xFF26A69A, "🎞", t("افکت", "Effect"), fg, 0.6f, () -> {
+             r.addView(accordionGroupFaded(0xFF26A69A, "🎞", t("افکت کادر عملکرد", "Action box effect"), fg, 0.6f, () -> {
               View[] its = new View[fxNames.length];
               for (int i = 0; i < its.length; i++) {
                final int k = i;
@@ -7722,7 +7708,7 @@ jobs:
               }
               return its;
              }));
-             r.addView(accordionRow(0xFFFFB300, "⏱", t("سرعت افکت", "Effect speed"), "bub_fxms", 100, 1500, 300, " ms", fg, null));
+             r.addView(accordionRow(0xFFFFB300, "⏱", t("سرعت افکت کادر عملکرد", "Action box effect speed"), "bub_fxms", 100, 1500, 300, " ms", fg, null));
             }
             r.addView(row(0xFF8E24AA, "📝", t("ثبت عملکردها", "Record actions"),
               BubbleActs.count(BubbleActs.load(sp)) + " / " + BubbleActs.MAX,
@@ -7730,53 +7716,48 @@ jobs:
              page = ACTS;
              show();
             }));
-            // icon and name of every action in the list: at least one of them is always on
-            final boolean icoOn = sp.getBoolean("bub_ico", false);
-            final boolean nmOn = sp.getBoolean("bub_nm", true);
-            r.addView(row(0xFF42A5F5, "🖼", t("آیکون عملکرد", "Action icon"),
-              t("آیکون برنامه کنار هر عملکرد در لیست", "The app icon next to every action in the list"),
-              icoOn ? 3 : 2, fg, v -> {
-             SharedPreferences.Editor ed = sp.edit().putBoolean("bub_ico", !icoOn);
-             if (icoOn && !nmOn) ed.putBoolean("bub_nm", true);
-             ed.apply();
-             show();
-            }));
-            r.addView(accordionRow(0xFF26C6DA, "📏", t("سایز آیکون عملکرد", "Action icon size"), "bub_isz", 5, 32, 20, " dp", fg, null));
-            r.addView(row(0xFFFFA726, "🔤", t("اسم عملکرد", "Action name"),
-              t("نام هر عملکرد سمت راست آیکون آن", "The name of every action to the right of its icon"),
-              nmOn || !icoOn ? 3 : 2, fg, v -> {
-             SharedPreferences.Editor ed = sp.edit().putBoolean("bub_nm", !nmOn);
-             if (nmOn && !icoOn) ed.putBoolean("bub_ico", true);
-             ed.apply();
-             show();
-            }));
-            // every app of the list in its own box, stacked, with a gap between them
-            final boolean sep = sp.getBoolean("bub_sep", false);
-            r.addView(toggleRowThen(0xFF26A69A, "▦", t("کادر جدا", "Separate boxes"),
-              t("هر برنامه در کادر جداگانه زیر هم؛ عرض و ارتفاع لیست اندازه همه کادرها را هم‌زمان تغییر می‌دهد",
-                "Every app in its own box, stacked; list width and height resize all the boxes together"),
-              "bub_sep", false, fg, () -> show()));
-            // how many boxes are visible at once (the others scroll in)
-            r.addView(accordionRow(0xFF5C6BC0, "🔢", t("تعداد کادرها", "Number of boxes"), "bub_cnt", 2, 20, 20, "", fg, null));
-            // look of the list (even fainter boxes inside)
-            r.addView(accordionGroupFaded(0xFF5E35B1, "🎨", t("پس‌زمینه لیست عملکرد", "Action list background"), fg, 0.4f, () -> {
+            r.addView(accordionGroupFaded(0xFF5E35B1, "🎨", t("تنظیمات کادر عملکرد", "Action box settings"), fg, 0.4f, () -> {
+             final boolean icoOn = sp.getBoolean("bub_ico", false);
+             final boolean nmOn = sp.getBoolean("bub_nm", true);
+             final boolean sep = sp.getBoolean("bub_sep", false);
+             final boolean glassOn = sp.getBoolean("bub_lglass", false);
              List<View> l = new ArrayList<>();
-             l.add(row(0xFFE91E63, "🎨", t("رنگ", "Color"),
-               t("رنگ و شفافیت پس‌زمینه لیست", "Color and opacity of the list background"),
-               0, fg, v -> {
-              page = BLBG;
+             // top to bottom
+             l.add(row(0xFF42A5F5, "🖼", t("آیکون عملکرد", "Action icon"),
+               t("آیکون برنامه کنار هر عملکرد در لیست", "The app icon next to every action in the list"),
+               icoOn ? 3 : 2, fg, v -> {
+              SharedPreferences.Editor ed = sp.edit().putBoolean("bub_ico", !icoOn);
+              if (icoOn && !nmOn) ed.putBoolean("bub_nm", true);
+              ed.apply();
               show();
              }));
-             l.add(accordionRow(0xFF42A5F5, "↔", t("عرض لیست", "List width"), "bub_lw", 15, 200, 190, " dp", fg, null));
-             l.add(accordionRow(0xFF26C6DA, "↕", t("ارتفاع لیست", "List height"), "bub_lh", 20, 100, 100, "%", fg, null));
-             if (sep) l.add(accordionRow(0xFF8D6E63, "⇕", t("فاصله کادر لیست", "List box spacing"), "bub_gap", -2000, 6000, 800, " µm", fg, null));
+             l.add(accordionRow(0xFF26C6DA, "📏", t("سایز آیکون عملکرد", "Action icon size"), "bub_isz", 5, 32, 20, " dp", fg, null));
+             l.add(row(0xFFFFA726, "🔤", t("اسم عملکرد", "Action name"),
+               t("نام هر عملکرد سمت راست آیکون آن", "The name of every action to the right of its icon"),
+               nmOn || !icoOn ? 3 : 2, fg, v -> {
+              SharedPreferences.Editor ed = sp.edit().putBoolean("bub_nm", !nmOn);
+              if (nmOn && !icoOn) ed.putBoolean("bub_ico", true);
+              ed.apply();
+              show();
+             }));
+             l.add(accordionRow(0xFFFFB300, "🔤", t("سایز اسم عملکرد", "Action name size"), "bub_lts", 10, 28, 15, " sp", fg, null));
+             l.add(toggleRowThen(0xFF26A69A, "▦", t("کادر جدا", "Separate boxes"),
+               t("هر برنامه در کادر جداگانه زیر هم؛ عرض و ارتفاع کادر اندازه همه کادرها را هم‌زمان تغییر می‌دهد",
+                 "Every app in its own box, stacked; box width and height resize all the boxes together"),
+               "bub_sep", false, fg, () -> show()));
+             l.add(accordionRow(0xFF5C6BC0, "🔢", t("تعداد کادرها", "Number of boxes"), "bub_cnt", 2, 20, 20, "", fg, null));
+             l.add(accordionRow(0xFF42A5F5, "↔", t("عرض کادر", "Box width"), "bub_lw", 15, 200, 190, " dp", fg, null));
+             l.add(accordionRow(0xFF26C6DA, "↕", t("ارتفاع کادر", "Box height"), "bub_lh", 20, 100, 100, "%", fg, null));
+             if (sep) l.add(accordionRow(0xFF8D6E63, "⇕", t("فاصله کادرها", "Box spacing"), "bub_gap", -2000, 6000, 800, " µm", fg, null));
+             l.add(row(0xFFE91E63, "🎨", t("پس زمینه", "Background"),
+               t("رنگ و شفافیت پس‌زمینه کادرهای عملکرد", "Color and opacity of the action boxes background"), 0, fg,
+               v -> { page = BLBG; show(); }));
              l.add(row(0xFF7E57C2, "🪟", t("شیشه‌ای", "Glass"),
-               t("لبه روشن و محو شدن پشت لیست", "Bright edge and blur behind the list"),
-               sp.getBoolean("bub_lglass", false) ? 3 : 2, fg, v -> {
-              sp.edit().putBoolean("bub_lglass", !sp.getBoolean("bub_lglass", false)).apply();
+               t("لبه روشن و محو شدن پشت کادرها", "Bright edge and blur behind the boxes"),
+               glassOn ? 3 : 2, fg, v -> {
+              sp.edit().putBoolean("bub_lglass", !glassOn).apply();
               show();
              }));
-             l.add(accordionRow(0xFFFFB300, "🔤", t("اندازه نام برنامه‌ها", "App name size"), "bub_lts", 10, 28, 15, " sp", fg, null));
              return l.toArray(new View[0]);
             }));
             return wrapScroll(r);
@@ -7787,8 +7768,8 @@ jobs:
             LinearLayout r = vbox();
             r.addView(topBar(t("عملکردهای حباب", "Bubble actions"), fg));
             TextView hint = new TextView(this);
-            hint.setText(t("هر جایگاه یک عملکرد است: برنامه را انتخاب می‌کنید، یک نام دلخواه می‌دهید و نوع اجرا را برمی‌گزینید (پاپ آپ، کامل، ضبط روش داخل برنامه یا کاشی تنظیمات سریع). در لیست حباب با همان نام دلخواه دیده می‌شود. با ضبط روش، برنامه باز می‌شود و کلیک‌های شما ذخیره می‌شود؛ با زدن روی نام، همان کلیک‌ها دوباره اجرا می‌شود.",
-              "Each slot is one action: pick an app, give it a custom name and choose how it runs (popup, full, record a way inside the app, or a Quick Settings tile). It shows in the bubble list with that name. When recording, the app opens and your taps are saved; tapping the name plays the same taps again."));
+            hint.setText(t("هر جایگاه یک عملکرد است: برنامه را انتخاب می‌کنید، یک نام دلخواه می‌دهید و نوع اجرا را برمی‌گزینید (پاپ آپ یا کامل). در لیست حباب با همان نام دلخواه دیده می‌شود.",
+              "Each slot is one action: pick an app, give it a custom name and choose how it runs (popup or full). It shows in the bubble list with that name."));
             hint.setTextSize(12);
             hint.setTextColor(fg);
             hint.setAlpha(0.65f);
@@ -8053,7 +8034,6 @@ jobs:
 
            // what a move does, in a few words
            String swSummary(String d) {
-            if (sp.getBoolean("swai_" + d, false)) return t("هوش مصنوعی", "AI");
             if ("list".equals(sp.getString("swm_" + d, ""))) {
              int n = BubbleActs.swList(sp, d).size();
              if (n > 0) return t("لیست برنامه‌ها", "App list") + " (" + n + ")";
@@ -8078,38 +8058,21 @@ jobs:
            }
 
            void swipeMenu(final String d) {
-            final boolean ai = sp.getBoolean("swai_" + d, false);
             final List<CharSequence> items = new ArrayList<>();
-            items.add(t("📱 انتخاب برنامه", "📱 Choose an app"));
+            items.add("📱 " + t("ثبت عملکرد", "Record action"));
             items.add("➕ " + t("لیست برنامه‌ها", "App list") + " (" + BubbleActs.swList(sp, d).size() + " / " + BubbleActs.SW_MAX + ")");
-            items.add((ai ? "☑ " : "☐ ") + t("هوش مصنوعی", "AI"));
-            if (ai) items.add(t("⚙ ویرایش لیست هوش مصنوعی", "⚙ Edit the AI list"));
-            items.add(t("🗑 بدون عملکرد", "🗑 No action"));
+            items.add("🗑 " + t("بدون عملکرد", "No action"));
             new AlertDialog.Builder(this).setTitle(swArrow(d) + "  " + swDirName(d))
               .setItems(items.toArray(new CharSequence[0]), (dlg, w) -> {
                if (w == 0) {
                 pickSwipeApp(d);
                } else if (w == 1) {
-                sp.edit().putString("swm_" + d, "list").putBoolean("swai_" + d, false).apply();
+                sp.edit().putString("swm_" + d, "list").apply();
                 swDir = d;
                 page = SWL;
                 show();
-               } else if (w == 2) {
-                if (ai) {
-                 sp.edit().putBoolean("swai_" + d, false).apply();
-                 show();
-                } else {
-                 sp.edit().putBoolean("swai_" + d, true).apply();
-                 swDir = d;
-                 page = AIL;
-                 show();
-                }
-               } else if (ai && w == 3) {
-                swDir = d;
-                page = AIL;
-                show();
                } else {
-                sp.edit().putBoolean("swai_" + d, false).remove("swipe_" + d).remove("swm_" + d).remove("swl_" + d).apply();
+                sp.edit().remove("swipe_" + d).remove("swm_" + d).remove("swl_" + d).putBoolean("swai_" + d, false).apply();
                 show();
                }
               })
@@ -8342,15 +8305,10 @@ jobs:
             CharSequence[] items = {
               t("🗗 باز شدن در پاپ آپ", "🗗 Open in a popup"),
               t("⛶ باز شدن کامل", "⛶ Open full"),
-              t("🎬 ضبط روش داخل برنامه", "🎬 Record a way inside the app"),
-              t("🔤 کلیک با نام دکمه‌ها", "🔤 Tap buttons by name"),
-              t("🔲 کاشی تنظیمات سریع", "🔲 Quick Settings tile")};
+              };
             new AlertDialog.Builder(this).setTitle(name).setItems(items, (d, w) -> {
              if (w == 0) actSave(slot, pkg, "app", "popup", t("باز شدن در پاپ آپ", "Open in popup"), name);
-             else if (w == 1) actSave(slot, pkg, "app", "full", t("باز شدن کامل", "Open full"), name);
-             else if (w == 2) actStartMacro(slot, pkg, name);
-             else if (w == 3) actNames(slot, pkg, name);
-             else actPickTile(slot, pkg, name, appName);
+             else actSave(slot, pkg, "app", "full", t("باز شدن کامل", "Open full"), name);
             }).setNegativeButton(t("لغو", "Cancel"), null).show();
            }
 
@@ -8554,7 +8512,7 @@ jobs:
               : (mode == 1 ? t("رنگ منو", "Menu color")
               : (mode == 2 ? t("پس‌زمینه کادر", "Frame background")
               : (mode == 3 ? t("رنگ کادر تنظیمات", "Settings frame color")
-              : (mode == 4 ? t("رنگ کادر اصلی", "Main box color") : mode == 5 ? t("رنگ کادر فرعی", "Secondary box color") : t("رنگ لیست عملکرد", "Action list color")))));
+              : (mode == 4 ? t("رنگ کادر اصلی", "Main box color") : mode == 5 ? t("رنگ کادر فرعی", "Secondary box color") : t("پس زمینه کادر عملکرد", "Action box background")))));
             LinearLayout p = vbox();
             p.addView(topBar(title, fg));
 
