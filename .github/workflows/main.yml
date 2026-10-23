@@ -98,7 +98,7 @@ jobs:
                   targetSdk 34
                   // minutes since 1970: always bigger than the previous build, so Android never sees it as a downgrade
                   versionCode System.currentTimeMillis().intdiv(60000L).intValue()
-                  versionName "52.0"
+                  versionName "53.0"
               }
               buildTypes {
                   debug { signingConfig signingConfigs.vadlan }
@@ -427,7 +427,7 @@ jobs:
            private JSONArray recSteps = new JSONArray();
            private String lastStep = "";
            private long lastStepAt = 0;
-           private TextView pill;
+           private TextView pill, pill2;
 
            private boolean fa() { return getSharedPreferences("l", 0).getString("lang", "fa").equals("fa"); }
 
@@ -479,6 +479,22 @@ jobs:
              lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
              lp.y = dp(56);
              wm.addView(pill, lp);
+             pill2 = new TextView(this);
+             pill2.setTextColor(0xFFFFFFFF);
+             pill2.setTextSize(14);
+             pill2.setPadding(dp(18), dp(10), dp(18), dp(10));
+             GradientDrawable g2 = new GradientDrawable();
+             g2.setCornerRadius(dp(30));
+             g2.setColor(0xEE1E88E5);
+             pill2.setBackground(g2);
+             pill2.setText(fa() ? "📋 کپی نام دکمه‌ها" : "📋 Copy button names");
+             pill2.setOnClickListener(v -> copyNames());
+             WindowManager.LayoutParams lp2 = new WindowManager.LayoutParams(-2, -2,
+               WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+               WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+             lp2.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+             lp2.y = dp(112);
+             wm.addView(pill2, lp2);
             } catch (Throwable e) { pill = null; }
            }
 
@@ -490,7 +506,37 @@ jobs:
             try {
              if (pill != null) ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(pill);
             } catch (Throwable e) { }
+            try {
+             if (pill2 != null) ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(pill2);
+            } catch (Throwable e) { }
             pill = null;
+            pill2 = null;
+           }
+
+           // copies the names of the buttons on the screen of the recorded app, so they can be pasted in the chat
+           private void copyNames() {
+            java.util.LinkedHashSet<String> out = new java.util.LinkedHashSet<>();
+            for (AccessibilityNodeInfo root : roots()) {
+             if (recPkg != null && !recPkg.equals(String.valueOf(root.getPackageName()))) continue;
+             collectNames(root, out, 0);
+            }
+            String s = android.text.TextUtils.join(" | ", out);
+            try {
+             android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+             cm.setPrimaryClip(android.content.ClipData.newPlainText("names", s));
+            } catch (Throwable e) { }
+            Toast.makeText(this, fa() ? ("کپی شد: " + out.size() + " نام. آن را در چت paste کنید")
+              : ("Copied " + out.size() + " names. Paste them in the chat"), Toast.LENGTH_LONG).show();
+           }
+
+           private void collectNames(AccessibilityNodeInfo n, java.util.Set<String> out, int depth) {
+            if (n == null || depth > 40 || out.size() > 120) return;
+            CharSequence t = n.getText(), d = n.getContentDescription();
+            String lab = t != null && t.toString().trim().length() > 0 ? t.toString().trim()
+              : (d != null && d.toString().trim().length() > 0 ? d.toString().trim() : "");
+            if (lab.length() > 40) lab = lab.substring(0, 40);
+            if (!lab.isEmpty()) out.add((n.isClickable() ? "*" : "") + lab);
+            for (int i = 0; i < n.getChildCount(); i++) collectNames(n.getChild(i), out, depth + 1);
            }
 
            // the visible name of a view: its own text, or the first text inside it
@@ -8297,13 +8343,42 @@ jobs:
               t("🗗 باز شدن در پاپ آپ", "🗗 Open in a popup"),
               t("⛶ باز شدن کامل", "⛶ Open full"),
               t("🎬 ضبط روش داخل برنامه", "🎬 Record a way inside the app"),
+              t("🔤 کلیک با نام دکمه‌ها", "🔤 Tap buttons by name"),
               t("🔲 کاشی تنظیمات سریع", "🔲 Quick Settings tile")};
             new AlertDialog.Builder(this).setTitle(name).setItems(items, (d, w) -> {
              if (w == 0) actSave(slot, pkg, "app", "popup", t("باز شدن در پاپ آپ", "Open in popup"), name);
              else if (w == 1) actSave(slot, pkg, "app", "full", t("باز شدن کامل", "Open full"), name);
              else if (w == 2) actStartMacro(slot, pkg, name);
+             else if (w == 3) actNames(slot, pkg, name);
              else actPickTile(slot, pkg, name, appName);
             }).setNegativeButton(t("لغو", "Cancel"), null).show();
+           }
+
+           // the person types the names of the buttons to tap, one after the other (separated by commas)
+           void actNames(final int slot, final String pkg, final String name) {
+            final EditText et = new EditText(this);
+            et.setSingleLine(true);
+            FrameLayout fl = new FrameLayout(this);
+            fl.setPadding(dp(20), dp(8), dp(20), 0);
+            fl.addView(et, new FrameLayout.LayoutParams(-1, -2));
+            new AlertDialog.Builder(this).setTitle(t("نام دکمه‌ها", "Button names"))
+              .setMessage(t("برنامه باز می‌شود و دکمه‌هایی که اینجا می‌نویسید به ترتیب زده می‌شوند. چند نام را با کاما جدا کنید، مثلاً: Live",
+                "The app opens and the buttons you type here are tapped in order. Separate several names with commas, for example: Live"))
+              .setView(fl)
+              .setPositiveButton(t("ثبت", "Save"), (d, w) -> {
+               String[] parts = et.getText().toString().split("[,،]");
+               JSONArray arr = new JSONArray();
+               try {
+                for (String p : parts) {
+                 String s = p.trim();
+                 if (!s.isEmpty()) arr.put(new JSONObject().put("t", s).put("id", ""));
+                }
+               } catch (Exception e) { }
+               if (arr.length() == 0) return;
+               actSave(slot, pkg, "macro", arr.toString(), "🔤 " + arr.length(), name);
+               if (!TileClickService.ready()) actAskA11y();
+              })
+              .setNegativeButton(t("لغو", "Cancel"), null).show();
            }
 
            // the app opens and everything tapped in it is recorded until "Stop recording" is pressed
