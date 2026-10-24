@@ -1821,6 +1821,7 @@ jobs:
             private Integer forcedX = null, forcedY = null;
             private String curKey = null;
             private int curCX, curCY, lastRowLeft, lastRowRight, lastRowBottom;
+            private boolean noOpenFx = false;
             private int listTextColor = 0xFFFFFFFF;
             private int lastTouchRawY = 0;
 
@@ -1987,7 +1988,7 @@ jobs:
              } catch (Throwable e) { }
             }
             fillList();
-            if (slideOpen || sp.getInt("bub_fx", 6) != 0) listRoot.setAlpha(0f);   // the opening effect shows it
+            if ((slideOpen || sp.getInt("bub_fx", 6) != 0) && !(noOpenFx && sp.getInt("bub_fx", 6) == 0)) listRoot.setAlpha(0f);   // the opening effect shows it
             layoutList(true);
             playOpen();
            }
@@ -1995,7 +1996,7 @@ jobs:
            // opening effect of the action list (0 none, 1 fade, 2 slide from the side, 3 grow from the bubble, 5 slide from the top, 6 stretchy drop)
            private void playOpen() {
             final FrameLayout r = listRoot;
-            final int fx = (slideOpen ? 2 : sp.getInt("bub_fx", 6));
+            final int fx = noOpenFx ? 0 : (slideOpen ? 2 : sp.getInt("bub_fx", 6));
             if (r == null || fx == 0) return;
             final long ms = Math.max(100, Math.min(1500, sp.getInt("bub_fxms", 300)));
             final boolean right = sp.getInt("mock_px", 70) > 50;
